@@ -53,7 +53,7 @@ VALUES (15, '2025-05-02', 3, 2, 1, 'RESERVATION');
 INSERT INTO reservation (id, reservation_date, reservation_time_id, theme_id, member_id, reservation_status)
 VALUES (16, '2025-05-01', 1, 1, 1, 'RESERVATION');
 INSERT INTO reservation (id, reservation_date, reservation_time_id, theme_id, member_id, reservation_status)
-VALUES (17, '2025-04-30', 2, 2, 1, 'RESERVATION');
+VALUES (17, '2025-05-17', 2, 2, 1, 'RESERVATION');
 
 
 ALTER TABLE reservation_time
