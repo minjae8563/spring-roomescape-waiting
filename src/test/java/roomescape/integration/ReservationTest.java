@@ -107,7 +107,7 @@ public class ReservationTest extends BaseTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(2));
 
         RestAssured.given().log().all()
                 .cookie("token", token)
@@ -120,7 +120,7 @@ public class ReservationTest extends BaseTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0));
+                .body("size()", is(1));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class ReservationTest extends BaseTest {
                 .when().get("/times")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(2));
 
         RestAssured.given().log().all()
                 .when().delete("/times/1")
@@ -161,7 +161,7 @@ public class ReservationTest extends BaseTest {
                 .when().get("/reservations")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(0));
+                .body("size()", is(1));
     }
 
     @Test
@@ -193,7 +193,7 @@ public class ReservationTest extends BaseTest {
                 .statusCode(200).extract()
                 .jsonPath().getList(".", ReservationResponse.class);
 
-        assertThat(response.size()).isEqualTo(1);
+        assertThat(response.size()).isEqualTo(2);
     }
 
     @Test
@@ -256,6 +256,17 @@ public class ReservationTest extends BaseTest {
                 .cookie("token", token)
                 .contentType(ContentType.JSON)
                 .when().get("/reservations-mine")
+                .then().log().all()
+                .statusCode(200)
+                .body("size()", is(1));
+    }
+
+    @Test
+    void 인가_테마_10개를_가져온다() {
+        RestAssured.given().log().all()
+                .cookie("token", token)
+                .contentType(ContentType.JSON)
+                .when().get("/themes/popular")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", is(1));
