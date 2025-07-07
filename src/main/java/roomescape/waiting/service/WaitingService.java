@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import roomescape.member.domain.Member;
 import roomescape.member.service.MemberService;
@@ -22,7 +23,6 @@ import roomescape.waiting.domain.Waiting;
 import roomescape.waiting.repository.WaitingRepository;
 
 @Service
-@Transactional(readOnly = true)
 public class WaitingService {
 
     private final WaitingRepository waitingRepository;
@@ -41,7 +41,6 @@ public class WaitingService {
         this.reservationRepository = reservationRepository;
     }
 
-    @Transactional
     public ReservationResponse createById(Long memberId, ReservationRequest request) {
         Member member = memberService.findById(memberId);
         ReservationDate reservationDate = new ReservationDate(request.date());
@@ -58,7 +57,6 @@ public class WaitingService {
         return ReservationResponse.fromWaiting(created);
     }
 
-    @Transactional
     public void deleteOwnedWaiting(Long memberId, Long id) {
         Waiting waiting = waitingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("[ERROR] 대기를 찾을 수 없습니다."));
@@ -68,7 +66,6 @@ public class WaitingService {
         waitingRepository.deleteById(id);
     }
 
-    @Transactional
     public void deleteById(Long id) {
         waitingRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("[ERROR] 대기를 찾을 수 없습니다."));
@@ -85,12 +82,14 @@ public class WaitingService {
         return ReservationResponse.fromReservation(save);
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<MemberReservationResponse> findAllByMemberId(Long id) {
         return waitingRepository.findAllWaitingWithRankByMemberId(id).stream()
                 .map(MemberReservationResponse::fromWaitingWithRank)
                 .toList();
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<MemberReservationResponse> findAllWithRank() {
         List<MemberReservationResponse> responses = new ArrayList<>(
                 waitingRepository.findAllWithRank().stream()
@@ -108,6 +107,7 @@ public class WaitingService {
         return responses;
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<ReservationResponse> findAll() {
         List<Waiting> waitings = waitingRepository.findAll();
         return waitings.stream()
